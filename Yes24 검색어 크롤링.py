@@ -13,23 +13,25 @@ from bs4 import BeautifulSoup
 # In[ ]:
 
 
-# 반도체 검색 -> 수험서 자격증 총 45권
-# https://www.yes24.com/Product/Search?domain=BOOK&query=%EB%B0%98%EB%8F%84%EC%B2%B4&size=24&dispNo2=001001015
-
 
 # 데이터 수집 함수 정의
 def yes24DataReader():
 
+
+
     root_url = 'http://www.yes24.com'
-    # url_set = 'https://www.yes24.com/Product/Search?domain=BOOK&query=%EB%B0%98%EB%8F%84%EC%B2%B4&size=24&dispNo2=001001015&page='
-    url_set = 'https://www.yes24.com/Product/Search?domain=BOOK&query=sql&dispNo2=001001003&size=24&dispNo3=001001003025&page='
+
+    # url_set은 원하는 yes24에서 원하는 필터링을 모두 한 뒤의 해당 URL을 입력하면 됩니다.
+    # URL에서 &page=1 부분은 삭제하시면됩니다. 다음 로직에서 자동으로 추가하게 만들었습니다.
+    url_set = 'https://www.yes24.com/Product/Search?domain=BOOK&query=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&size=24&dispNo2=001001003&statGbYn=Y'
     
+    # 빈 책 데이터 리스트 생성
     book_list=[]
 
-    # 페이지
-    for i in range(1,10):
+    # 페이지별 데이터 크롤링(1 - 20페이지까지)
+    for i in range(1,20):
     
-        url = url_set + str(i)
+        url = url_set + '&page=' + str(i)
         res = requests.post(url)
         soup = BeautifulSoup(res.text, 'html5lib')
         tag = '#yesSchList > li' #이름 검색 (반도체)
@@ -182,7 +184,8 @@ def yes24DataReader():
 
 
 df = yes24DataReader()
-df.to_excel('sql_관련도서.xlsx', index=False, sheet_name='sheet_name_1')
+# 각 엑셀 제목은 한글도 가능하되 띄어쓰기는 지양하실길 바랍니다.
+df.to_excel('데이터분석_관련도서2.xlsx', index=False, sheet_name='sheet_name_1')
 
 # In[8]:
 
